@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio de Web Components</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>🧩 Laboratorio de Web Components</h1>
+    <p>Componentes reutilizables con estándares puros: Custom Elements + Templates + Shadow DOM.</p>
+  </header>
+
+  <!-- =======================================================
+       PARTE 1 · Lienzo dinámico (creativo): inserta componentes
+       desde la paleta. Demuestra que se crean por código en runtime.
+       ======================================================= -->
+  <main class="layout">
+    <aside class="palette">
+      <h2>Paleta</h2>
+      <div id="palette-buttons" class="palette-buttons"></div>
+    </aside>
+
+    <section class="canvas">
+      <div class="canvas-header">
+        <input id="form-title" class="form-title" type="text"
+               value="Mi lienzo" aria-label="Título" />
+      </div>
+
+      <form id="form" class="form-fields">
+        <p id="empty-hint" class="empty-hint">
+          ⬅️ Elige un componente de la paleta para insertarlo.
+        </p>
+      </form>
+
+      <div class="actions">
+        <button id="btn-submit" type="button" class="btn-primary">Ver valores</button>
+        <button id="btn-clear" type="button" class="btn-ghost">Limpiar</button>
+      </div>
+
+      <pre id="output" class="output" hidden></pre>
+    </section>
+  </main>
+
+  <!-- =======================================================
+       PARTE 2 · Galería declarativa: usa CADA componente en HTML
+       puro, varias veces, cambiando atributos y estilos.
+       Esto demuestra la ENCAPSULACIÓN (cada instancia es independiente).
+       ======================================================= -->
+  <section class="showcase">
+    <h2>Galería · uso declarativo y encapsulación</h2>
+
+    <!-- 1. Campo numérico (mismo componente, distintos atributos) -->
+    <div class="demo-block">
+      <h3>1 · &lt;campo-numerico&gt;</h3>
+      <campo-numerico value="0">Number:</campo-numerico>
+      <campo-numerico value="5" min="0" max="10" step="1">Cantidad (0–10):</campo-numerico>
+    </div>
+
+    <!-- 2. Slider con labels (vía slots) -->
+    <div class="demo-block">
+      <h3>2 · &lt;mi-slider&gt;</h3>
+      <mi-slider min="0" max="100" value="50" step="5" style="max-width: 300px;">
+        <mi-slider-label position="0">0℃</mi-slider-label>
+        <mi-slider-label position="25">25℃</mi-slider-label>
+        <mi-slider-label position="50">50℃</mi-slider-label>
+        <mi-slider-label position="75">75℃</mi-slider-label>
+        <mi-slider-label position="100">100℃</mi-slider-label>
+      </mi-slider>
+
+      <mi-slider min="0" max="10" value="3" step="1" style="max-width: 260px; margin-top: 24px;">
+        <mi-slider-label position="0">Min</mi-slider-label>
+        <mi-slider-label position="5">Medio</mi-slider-label>
+        <mi-slider-label position="10">Max</mi-slider-label>
+      </mi-slider>
+    </div>
+
+    <!-- 3. Switch (slots con mensajes) -->
+    <div class="demo-block">
+      <h3>3 · &lt;mi-switch&gt;</h3>
+      <mi-switch>
+        <span slot="checked-message">On</span>
+        <span slot="unchecked-message">Off</span>
+        <label>Captions:</label>
+      </mi-switch>
+      <br><br>
+      <mi-switch checked>
+        <span slot="checked-message">Activado</span>
+        <span slot="unchecked-message">Desactivado</span>
+        <label>Notificaciones:</label>
+      </mi-switch>
+    </div>
+
+    <!-- 4. Breadcrumb -->
+    <div class="demo-block">
+      <h3>4 · &lt;mi-breadcrumb&gt;</h3>
+      <mi-breadcrumb>
+        <mi-breadcrumb-item href="#">Home</mi-breadcrumb-item>
+        <mi-breadcrumb-item href="#">Next Level Down</mi-breadcrumb-item>
+        <mi-breadcrumb-item>Current Location</mi-breadcrumb-item>
+      </mi-breadcrumb>
+    </div>
+
+    <!-- 5. Acordeón -->
+    <div class="demo-block">
+      <h3>5 · &lt;mi-accordion&gt;</h3>
+      <mi-accordion style="max-width: 350px;">
+        <mi-accordion-item>
+          <span slot="heading">Item 1</span>
+          <div class="panel">Panel one content</div>
+        </mi-accordion-item>
+        <mi-accordion-item>
+          <span slot="heading">Item 2</span>
+          <div class="panel">Panel 2 content</div>
+        </mi-accordion-item>
+        <mi-accordion-item>
+          <span slot="heading">Item 3</span>
+          <div class="panel">Panel 3 content</div>
+        </mi-accordion-item>
+      </mi-accordion>
+    </div>
+
+    <!-- 6. Tarjeta (dimensiones por CSS variables) -->
+    <div class="demo-block">
+      <h3>6 · &lt;mi-card&gt; (tamaño por CSS)</h3>
+      <mi-card>Tamaño por defecto</mi-card>
+      <mi-card class="custom">Custom size using CSS</mi-card>
+      <mi-card style="--card-bg:#ede7f6; --card-width:240px;">Otro estilo inline</mi-card>
+    </div>
+
+    <!-- 7. Scroll horizontal (contiene tarjetas) -->
+    <div class="demo-block">
+      <h3>7 · &lt;mi-horizontal-scroll&gt;</h3>
+      <mi-horizontal-scroll style="max-width: 400px;">
+        <mi-card>Card 1</mi-card>
+        <mi-card>Card 2</mi-card>
+        <mi-card>Card 3</mi-card>
+        <mi-card>Card 4</mi-card>
+      </mi-horizontal-scroll>
+    </div>
+  </section>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
