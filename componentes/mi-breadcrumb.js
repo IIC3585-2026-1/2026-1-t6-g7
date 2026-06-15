@@ -31,10 +31,17 @@ templateBreadcrumb.innerHTML = `
 const templateBreadcrumbItem = document.createElement("template");
 templateBreadcrumbItem.innerHTML = `
   <style>
-    :host { display: block;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 8px; }
+    /* Una migaja es solo texto en línea. (Antes tenía borde/borde-redondeado
+       copiados del accordion-item, lo que dibujaba un recuadro indeseado.) */
+    :host { display: inline; }
+    a {
+      color: #673ab7;
+      text-decoration: none;
+      font: inherit;
+    }
+    a:hover { text-decoration: underline; }
+    /* La última migaja (sin href) se muestra como ubicación actual, no como enlace */
+    :host(:not([href])) a { color: #555; cursor: default; pointer-events: none; }
   </style>
   <a id="link"><slot></slot></a>
 `;

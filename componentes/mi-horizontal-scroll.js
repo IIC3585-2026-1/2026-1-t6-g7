@@ -8,7 +8,8 @@ templateHorizontalScroll.innerHTML = `
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-behavior: smooth;
-        background-color: #f5f5f5;
+        background-color: var(--scroll-bg, #f5f5f5);
+        border-radius: var(--scroll-radius, 0);
         }
 
         ::slotted(*) {

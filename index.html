@@ -3,68 +3,159 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo</title>
+  <title>Casa Inteligente · Panel de control</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <h1>Demo </h1>
 
-  <div class="demo">
-    <mi-slider id="slider" min="0" max="100" value="50" step="5">
-      <mi-slider-label position="0">0℃</mi-slider-label>
-      <mi-slider-label position="25">25℃</mi-slider-label>
-      <mi-slider-label position="50">50℃</mi-slider-label>
-      <mi-slider-label position="75">75℃</mi-slider-label>
-      <mi-slider-label position="100">100℃</mi-slider-label>
-    </mi-slider>
-    <div id = "campo-numerico">
-      <campo-numerico value="15" min="10" max="20"></campo-numerico>
-    </div>
-    <div id = "mi-switch">
-      <mi-switch rl="Hola" ll="Chao" color="#ff0000"></mi-switch>
-    </div>
-    <mi-accordion>
-      <mi-accordion-item>
-        <span slot="heading">Item 1</span>
-        <div class="panel">
-          Panel one content
-        </div>
-      </mi-accordion-item>
-      <mi-accordion-item>
-        <span slot="heading">Item 2</span>
-        <div class="panel">
-          Panel 2 content
-        </div>
-      </mi-accordion-item>
-      <mi-accordion-item>
-        <span slot="heading">Item 3</span>
-        <div class="panel">
-          Panel 3 content
-        </div>
-      </mi-accordion-item>
-    </mi-accordion>
-    <mi-card class = "costum">
-      Hola
-    </mi-card>
-    <mi-horizontal-scroll>
-      <mi-card class = "costum">Card 1 </mi-card>
-      <mi-card class = "costum">Card 2 </mi-card>
-      <mi-card class = "costum">Card 3 </mi-card>
-      <mi-card class = "costum">Card 4 </mi-card>
-      <mi-card class = "costum">Card 5 </mi-card>
-      <mi-card class = "costum">Card 6 </mi-card>
-    </mi-horizontal-scroll>
-
+  <header class="topbar">
+    <div class="brand">🏠 Casa Inteligente</div>
+    <!-- BREADCRUMB: navegación del espacio actual -->
     <mi-breadcrumb>
-      <mi-breadcrumb-item href="https://www.google.com/">Home</mi-breadcrumb-item>
-      <mi-breadcrumb-item href="#">Next Level Down</mi-breadcrumb-item>
-      <mi-breadcrumb-item>Current Location</mi-breadcrumb-item>
+      <mi-breadcrumb-item href="#">Casa</mi-breadcrumb-item>
+      <mi-breadcrumb-item href="#espacios">Espacios</mi-breadcrumb-item>
+      <mi-breadcrumb-item>Dormitorio principal</mi-breadcrumb-item>
     </mi-breadcrumb>
+  </header>
 
-  </div>
+  <main>
+    <section class="hero">
+      <h1>Dormitorio principal</h1>
+      <p class="subtitle">Ajusta el ambiente y observa cómo la habitación responde en vivo.</p>
+    </section>
 
-  <p>Valor actual: <span id="salida">50</span>℃</p>
+    <!-- ===== MAQUETA VIVA: refleja el estado de TODOS los controles ===== -->
+    <section class="preview" aria-label="Vista previa de la habitación">
+      <div class="room is-on" id="room">
+        <div class="room__glow"></div>
+        <div class="room__content">
+          <div class="room__top">
+            <div class="room__temp"><span data-out="slider-temp">22</span><sup>℃</sup></div>
+            <div class="room__light" id="lightState">Luz encendida</div>
+          </div>
+          <div class="room__eq" id="eq" aria-label="Nivel de volumen"></div>
+          <div class="room__stats">
+            <span class="chip" id="chipTimer">Apaga en 30 min</span>
+            <span class="chip" id="chipPers">2 personas</span>
+            <span class="chip" id="chipPrio">Prioridad 1</span>
+          </div>
+          <div class="room__badges" id="badges"></div>
+        </div>
+      </div>
+    </section>
 
+    <!-- ESCENAS: al hacer clic aplican un preset que mueve todos los controles -->
+    <section id="espacios">
+      <h2>Escenas rápidas</h2>
+      <p class="hint">Haz clic en una escena para aplicarla · desliza para ver más →</p>
+      <mi-horizontal-scroll>
+        <mi-card class="escena" data-scene="noche">🌙<span>Modo noche</span></mi-card>
+        <mi-card class="escena" data-scene="lectura">📖<span>Lectura</span></mi-card>
+        <mi-card class="escena" data-scene="cine">🎬<span>Cine en casa</span></mi-card>
+        <mi-card class="escena" data-scene="despertar">☀️<span>Despertar</span></mi-card>
+        <mi-card class="escena" data-scene="fiesta">🎉<span>Fiesta</span></mi-card>
+        <mi-card class="escena" data-scene="ausente">🔒<span>Ausente</span></mi-card>
+      </mi-horizontal-scroll>
+    </section>
+
+    <!-- DISPOSITIVOS -->
+    <section>
+      <h2>Dispositivos</h2>
+      <div class="dispositivos">
+
+        <mi-card class="dispositivo">
+          <div class="dispositivo__body">
+            <h3>💡 Iluminación</h3>
+            <label class="campo-label">Brillo</label>
+            <mi-slider id="slider-brillo" min="0" max="100" value="70" step="5">
+              <mi-slider-label position="0">0%</mi-slider-label>
+              <mi-slider-label position="50">50%</mi-slider-label>
+              <mi-slider-label position="100">100%</mi-slider-label>
+            </mi-slider>
+            <p class="lectura">Brillo: <span data-out="slider-brillo">70</span>%</p>
+            <div class="fila">
+              <mi-switch id="sw-luz" ll="Off" rl="On" color="#b06a4f" checked></mi-switch>
+              <span>Luz encendida</span>
+            </div>
+          </div>
+        </mi-card>
+
+        <mi-card class="dispositivo">
+          <div class="dispositivo__body">
+            <h3>🌡️ Clima</h3>
+            <label class="campo-label">Temperatura objetivo</label>
+            <mi-slider id="slider-temp" min="16" max="30" value="22" step="1">
+              <mi-slider-label position="16">16℃</mi-slider-label>
+              <mi-slider-label position="23">23℃</mi-slider-label>
+              <mi-slider-label position="30">30℃</mi-slider-label>
+            </mi-slider>
+            <p class="lectura">Objetivo: <span data-out="slider-temp">22</span>℃</p>
+            <label class="campo-label">Apagar en (minutos)</label>
+            <campo-numerico id="campo-min" value="30" min="0" max="120"></campo-numerico>
+          </div>
+        </mi-card>
+
+        <mi-card class="dispositivo">
+          <div class="dispositivo__body">
+            <h3>🔊 Audio</h3>
+            <label class="campo-label">Volumen</label>
+            <mi-slider id="slider-vol" min="0" max="11" value="4" step="1">
+              <mi-slider-label position="0">Mute</mi-slider-label>
+              <mi-slider-label position="11">Max</mi-slider-label>
+            </mi-slider>
+            <p class="lectura">Volumen: <span data-out="slider-vol">4</span>/11</p>
+            <div class="fila">
+              <mi-switch id="sw-notif" ll="Silencio" rl="Sonido" color="#6b7d6e" data-badge="Notificaciones" checked></mi-switch>
+              <span>Notificaciones</span>
+            </div>
+          </div>
+        </mi-card>
+
+      </div>
+    </section>
+
+    <!-- CONFIGURACIÓN AVANZADA -->
+    <section>
+      <h2>Configuración avanzada</h2>
+      <mi-accordion>
+
+        <mi-accordion-item open>
+          <span slot="heading">Modos de la habitación</span>
+          <div class="panel">
+            <div class="fila">
+              <mi-switch id="sw-ahorro" ll="Off" rl="On" color="#6b7d6e" data-badge="Ahorro de energía"></mi-switch>
+              <span>Modo ahorro de energía</span>
+            </div>
+            <div class="fila">
+              <mi-switch id="sw-nomolestar" ll="Off" rl="On" color="#b06a4f" data-badge="No molestar"></mi-switch>
+              <span>Modo no molestar</span>
+            </div>
+          </div>
+        </mi-accordion-item>
+
+        <mi-accordion-item>
+          <span slot="heading">Programación de escenas</span>
+          <div class="panel">
+            <label class="campo-label">Prioridad de la escena (1 = máxima)</label>
+            <campo-numerico id="campo-prio" value="1" min="1" max="5"></campo-numerico>
+            <label class="campo-label">Personas esperadas en casa</label>
+            <campo-numerico id="campo-pers" value="2" min="1" max="8"></campo-numerico>
+          </div>
+        </mi-accordion-item>
+
+        <mi-accordion-item>
+          <span slot="heading">Preguntas frecuentes</span>
+          <div class="panel">
+            <p><strong>¿Los cambios se guardan solos?</strong> Sí, cada control aplica al instante sobre la vista previa.</p>
+            <p><strong>¿Funciona sin internet?</strong> Los dispositivos locales sí; las escenas en la nube no.</p>
+          </div>
+        </mi-accordion-item>
+
+      </mi-accordion>
+    </section>
+  </main>
+
+  <!-- Registro de los Custom Elements (carpeta `componentes/` = la correcta) -->
   <script type="module" src="./componentes/mi-slider.js"></script>
   <script type="module" src="./componentes/campo-numerico.js"></script>
   <script type="module" src="./componentes/mi-switch.js"></script>

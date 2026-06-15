@@ -13,8 +13,9 @@ const templateAccordionItem = document.createElement("template");
 templateAccordionItem.innerHTML = `
   <style>
     :host { display: block;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            border: var(--accordion-border, 1px solid #ddd);
+            border-radius: var(--accordion-radius, 8px);
+            background: var(--accordion-bg, transparent);
             margin-bottom: 8px; }
     .header { width: 100%;
               padding: 14px 16px;
@@ -22,6 +23,7 @@ templateAccordionItem.innerHTML = `
               border: none;
               cursor: pointer;
               font: inherit;
+              color: inherit;
               text-align: left; }
     .panel { padding: 0 16px 14px;
              display: none; }

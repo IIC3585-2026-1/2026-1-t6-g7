@@ -6,7 +6,7 @@ templateSlider.innerHTML = `
             system-ui,
             sans-serif; }
     input[type="range"] { width: 100%;
-                          accent-color: #673ab7; }
+                          accent-color: var(--slider-accent, #673ab7); }
     .labels { position: relative;
               height: 1.4em; margin-top: 4px; }
     ::slotted(mi-slider-label) {

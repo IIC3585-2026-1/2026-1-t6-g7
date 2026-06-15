@@ -1,0 +1,6 @@
+# Config interna de herramientas (no forma parte del proyecto)
+.claude/
+
+# Sistemas operativos
+.DS_Store
+Thumbs.db

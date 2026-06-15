@@ -1,22 +1,215 @@
+/* styles.css — estilos GLOBALES de la página.
+   No entran al Shadow DOM de los componentes: solo afectan el layout, los HOST
+   y las VARIABLES CSS de theming que cada componente expone (esas sí cruzan el
+   límite del shadow, que es justamente el canal pensado para personalizar). */
+
+:root {
+  /* --- Paleta minimalista "casa moderna" (neutros cálidos + un acento clay) --- */
+  --bg:       #f3f1ec;   /* papel cálido */
+  --surface:  #ffffff;   /* tarjetas */
+  --ink:      #1c1b19;   /* texto principal (casi negro cálido) */
+  --muted:    #908b81;   /* texto secundario */
+  --line:     #e7e3da;   /* líneas y bordes suaves */
+  --accent:   #b06a4f;   /* clay / terracota */
+  --accent-soft: #f0e7e1;
+
+  /* --- Hooks de theming de los componentes (heredan al Shadow DOM) --- */
+  --card-radius: 16px;
+  --card-border: 1px solid var(--line);
+  --card-bg: var(--surface);
+  --card-shadow: 0 1px 2px rgba(28, 27, 25, .04);
+
+  --slider-accent: var(--accent);
+
+  --scroll-bg: transparent;
+  --scroll-radius: 16px;
+
+  --accordion-border: 1px solid var(--line);
+  --accordion-radius: 14px;
+  --accordion-bg: var(--surface);
+}
+
+* { box-sizing: border-box; }
+
 body {
-  font-family: system-ui, sans-serif;
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 0 20px;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  margin: 0;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1 { color: #673ab7; }
-
-.demo { margin: 30px 0; }
-
-#salida {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #673ab7;
+/* ---------- Barra superior ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 32px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: .02em;
 }
 
-.costum {width: 300px;
-         height: 200px;
-
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
 }
 
+/* ---------- Hero ---------- */
+.hero { margin-bottom: 8px; }
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.subtitle { margin: 0; color: var(--muted); font-size: 1.05rem; max-width: 46ch; }
+
+/* ---------- Maqueta viva de la habitación ---------- */
+.preview { margin-top: 28px; }
+.room {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  min-height: 260px;
+  padding: 28px;
+  color: #f4f1ea;
+  background: #16140f;            /* habitación a oscuras por defecto */
+  transition: background .4s ease;
+}
+.room__glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity .4s ease, background .4s ease;
+}
+.room__content { position: relative; z-index: 1; height: 100%;
+                 display: flex; flex-direction: column; gap: 18px; }
+.room__top { display: flex; align-items: flex-start; justify-content: space-between; }
+.room__temp { font-size: 3.4rem; font-weight: 600; line-height: 1; letter-spacing: -.03em; }
+.room__temp sup { font-size: 1.1rem; font-weight: 500; opacity: .8; }
+.room__light {
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .12em;
+  padding: 6px 12px; border-radius: 999px;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18);
+}
+.room:not(.is-on) { background: #0d0c0a; }
+.room:not(.is-on) .room__light { opacity: .6; }
+
+/* Ecualizador de volumen */
+.room__eq { display: flex; align-items: flex-end; gap: 5px; height: 46px; }
+.room__eq i {
+  width: 7px; height: 18%;
+  background: rgba(255,255,255,.18);
+  border-radius: 3px;
+  transition: height .25s ease, background .25s ease;
+}
+.room__eq i.on { background: #ffce8a; }
+.room__eq i.on:nth-child(odd)  { height: 70%; }
+.room__eq i.on:nth-child(even) { height: 100%; }
+.room__eq i.on:nth-child(3n)   { height: 55%; }
+.room__eq.muted i { background: rgba(255,255,255,.12); height: 18%; }
+
+.room__stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+.chip {
+  font-size: .76rem; padding: 5px 11px; border-radius: 999px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.16);
+}
+.room__badges { display: flex; flex-wrap: wrap; gap: 8px; min-height: 26px; }
+.badge {
+  font-size: .72rem; font-weight: 600; padding: 5px 11px; border-radius: 999px;
+  background: var(--accent); color: #fff;
+}
+
+/* ---------- Secciones ---------- */
+section { margin-top: 56px; }
+section h2 {
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--muted);
+  margin: 0 0 18px;
+}
+.hint { color: var(--muted); font-size: .82rem; margin: -10px 0 14px; }
+
+/* ---------- Escenas (cards dentro del horizontal-scroll) ----------
+   Tamaño y tema del <mi-card> se controlan desde aquí (host + variables). */
+.escena {
+  height: 150px;
+  cursor: pointer;
+  font-size: 1.9rem;
+  --card-shadow: 0 1px 2px rgba(28,27,25,.04);
+}
+.escena span {
+  display: block;
+  margin-top: 10px;
+  font-size: .82rem;
+  font-weight: 500;
+  letter-spacing: .01em;
+  color: var(--ink);
+}
+.escena:hover {
+  --card-border: 1px solid var(--accent);
+  --card-shadow: 0 8px 24px rgba(28,27,25,.10);
+}
+
+/* ---------- Dispositivos ---------- */
+.dispositivos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 20px;
+}
+.dispositivo { min-height: 240px; }
+.dispositivo__body {
+  width: 100%;
+  padding: 24px;
+  text-align: left;
+}
+.dispositivo__body h3 {
+  margin: 0 0 20px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.campo-label {
+  display: block;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  margin: 18px 0 8px;
+}
+.lectura { font-size: .85rem; color: var(--muted); margin: 8px 0 0; }
+.lectura span { font-weight: 600; color: var(--accent); }
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: .9rem;
+}
+
+/* ---------- Accordion ---------- */
+.panel .fila:first-child { margin-top: 0; }
+.panel p { margin: 8px 0; font-size: .9rem; color: var(--muted); }
+.panel p strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 600px) {
+  .topbar { flex-direction: column; align-items: flex-start; padding: 16px 20px; }
+  main { padding: 32px 20px 64px; }
+}

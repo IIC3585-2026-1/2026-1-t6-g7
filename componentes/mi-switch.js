@@ -61,7 +61,7 @@ templateSwitch.innerHTML = `
 `;
 
 class MiSwitch extends HTMLElement {
-  static get observedAttributes() { return ["rl", "ll", "color"]; }
+  static get observedAttributes() { return ["rl", "ll", "color", "checked"]; }
 
   constructor() {
     super();
@@ -81,10 +81,23 @@ class MiSwitch extends HTMLElement {
     this.shadowRoot.querySelector("#ll").textContent = ll;
     this.shadowRoot.querySelector("#rl").textContent = rl;
     this.style.setProperty("--switch-color", color);
+
+    const input = this.shadowRoot.querySelector("input");
+    input.checked = this.hasAttribute("checked");
+
+    // Al cambiar, reflejamos el estado en el atributo `checked` y avisamos
+    // a la aplicación con un CustomEvent (API pública para reaccionar).
+    input.addEventListener("change", () => {
+      this.toggleAttribute("checked", input.checked);
+      this.dispatchEvent(new CustomEvent("change", {
+        detail: { checked: input.checked }
+      }));
+    });
   }
 
-  get value() { return Number(this.getAttribute("value") || 0); }
-  set value(v) { this.setAttribute("value", v); }
+  // Propiedad pública para leer/fijar el estado desde JS.
+  get checked() { return this.hasAttribute("checked"); }
+  set checked(v) { this.toggleAttribute("checked", Boolean(v)); }
 }
 
 customElements.define("mi-switch", MiSwitch);
