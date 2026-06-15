@@ -1,94 +1,136 @@
 const templateCampoNumerico = document.createElement("template");
 templateCampoNumerico.innerHTML = `
-  <style>
-    :host { display: block; font-family: system-ui, sans-serif; }
-    input[type="number"] { width: 40%;
-                          height: 95%;
-                          background-color: #f0f0f0;
-                          margin: 0px;
-                          border-radius: 0px;
-                          text-align: center;
-                          border: 0px;
-                          font-weight: bolder;
-                          &::-webkit-outer-spin-button,
-                          &::-webkit-inner-spin-button{
-                            -webkit-appearance: none;
-                            margin: 0px;}
-                          }
-    #dec { background-color: #dec;
-              border-top-left-radius: 10px;
-              border-bottom-left-radius: 10px;
-              margin: 0px;
-              border: 0px;
-              height: 100%;
-              width: 20%;
-              font-weight: bolder;
-    }
+	<style>
+		:host {
+			display: block;
+			font-family: system-ui, sans-serif;
+		}
 
-    #inc { background-color: #dec;
-              border-top-right-radius: 10px;
-              border-bottom-right-radius: 10px;
-              margin: 0px;
-              border: 0px;
-              height: 100%;
-              width: 20%;
-              font-weight: bolder;
-    }
-    .control {height: 40px;
-              width: 200px}
-  </style>
-  <div class="control">
-    <button type="button" id="dec" aria-label="disminuir">−</button><input type="number" id="campo"><button type="button" id="inc" aria-label="aumentar">+</button>
-  </div>
+		.campo-numerico {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.etiqueta {
+			font-weight: 600;
+		}
+
+		.control {
+			width: 200px;
+			height: 40px;
+		}
+
+		input[type="number"] {
+			width: 40%;
+			height: 95%;
+			margin: 0;
+			border: 0;
+			border-radius: 0;
+			background-color: #f0f0f0;
+			text-align: center;
+			font-weight: bolder;
+		}
+
+		input[type="number"]::-webkit-outer-spin-button,
+		input[type="number"]::-webkit-inner-spin-button {
+			margin: 0;
+			-webkit-appearance: none;
+		}
+
+		button {
+			width: 20%;
+			height: 100%;
+			margin: 0;
+			border: 0;
+			background-color: #dec;
+			font-weight: bolder;
+		}
+
+		#dec {
+			border-top-left-radius: 10px;
+			border-bottom-left-radius: 10px;
+		}
+
+		#inc {
+			border-top-right-radius: 10px;
+			border-bottom-right-radius: 10px;
+		}
+	</style>
+
+	<div class="campo-numerico">
+		<span class="etiqueta"><slot></slot></span>
+		<div class="control">
+			<button type="button" id="dec" aria-label="disminuir">&minus;</button><input type="number" id="campo"><button type="button" id="inc" aria-label="aumentar">+</button>
+		</div>
+	</div>
 `;
 
 class CampoNumerico extends HTMLElement {
-  static get observedAttributes() { return ["min", "max", "value"]; }
+	static get observedAttributes() { return ["min", "max", "value"]; }
 
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-  }
+	constructor() {
+		super();
+		this.attachShadow({ mode: "open" });
+	}
 
-  connectedCallback() { this.render(); }
-  attributeChangedCallback() { if (this.isConnected) this.render(); }
+	connectedCallback() { this.render(); }
 
-  render() {
-    const min = Number(this.getAttribute("min") || 0);
-    const max = Number(this.getAttribute("max") || 100);
-    const value = Number(this.getAttribute("value") || min);
+	attributeChangedCallback(nombreAtributo) {
+		if (!this.isConnected) return;
 
-    this.shadowRoot.replaceChildren(templateCampoNumerico.content.cloneNode(true));
+		if (nombreAtributo === "value") {
+			this.actualizarCampo();
+			return;
+		}
 
-    const r = this.shadowRoot.querySelector("#campo");
-    r.min = min;
-    r.max = max;
-    r.value = value;
+		this.render();
+	}
 
-    r.addEventListener("input", () => {
-      this.setAttribute("value", r.value);
-      this.dispatchEvent(new CustomEvent("change", { detail: { value: r.value } }));
-    });
+	render() {
+		this.shadowRoot.replaceChildren(templateCampoNumerico.content.cloneNode(true));
 
-    const dec = this.shadowRoot.querySelector("#dec");
-    dec.addEventListener("click", () =>{
-      if (r.value > min){
-        this.setAttribute("value", String(Number(r.value) - 1));
-        this.dispatchEvent(new CustomEvent("change", { detail: { value: r.value } }));
-      }
-    });
+		const campo = this.shadowRoot.querySelector("#campo");
+		campo.min = this.min;
+		campo.max = this.max;
+		campo.value = this.value;
 
-    const inc = this.shadowRoot.querySelector("#inc");
-    inc.addEventListener("click", () => {
-      if (r.value < max){
-        this.setAttribute("value", String(Number(r.value) + 1));
-        this.dispatchEvent(new CustomEvent("change", { detail: { value: r.value } }));
-      }
-    })
-  }
+		campo.addEventListener("input", () => {
+			this.cambiarValor(campo.value);
+		});
 
-  get value() { return Number(this.getAttribute("value") || 0); }
-  set value(v) { this.setAttribute("value", v); }
+		this.shadowRoot.querySelector("#dec").addEventListener("click", () => {
+			this.cambiarValor(this.value - 1);
+		});
+
+		this.shadowRoot.querySelector("#inc").addEventListener("click", () => {
+			this.cambiarValor(this.value + 1);
+		});
+	}
+
+	cambiarValor(valorNuevo) {
+		const valorLimitado = this.limitarValor(Number(valorNuevo));
+
+		this.setAttribute("value", String(valorLimitado));
+		this.dispatchEvent(new CustomEvent("change", {
+			detail: { value: valorLimitado }
+		}));
+	}
+
+	limitarValor(valor) {
+		if (Number.isNaN(valor)) return this.min;
+		return Math.min(this.max, Math.max(this.min, valor));
+	}
+
+	actualizarCampo() {
+		const campo = this.shadowRoot.querySelector("#campo");
+		if (campo) campo.value = this.value;
+	}
+
+	get value() { return Number(this.getAttribute("value") || 0); }
+	set value(valor) { this.setAttribute("value", valor); }
+	get min() { return Number(this.getAttribute("min") || 0); }
+	get max() { return Number(this.getAttribute("max") || 100); }
 }
 
 customElements.define("campo-numerico", CampoNumerico);

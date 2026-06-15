@@ -1,103 +1,141 @@
 const templateSwitch = document.createElement("template");
 templateSwitch.innerHTML = `
-  <style>
-    :host { display: block; font-family: system-ui, sans-serif; }
+	<style>
+		:host {
+			display: block;
+			font-family: system-ui, sans-serif;
+		}
 
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 26px;
-    }
+		.control {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
 
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 50px;
+			height: 26px;
+		}
 
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      border-radius: 34px;
-      transition: background-color 0.3s ease;
-    }
+		.switch input {
+			width: 0;
+			height: 0;
+			opacity: 0;
+		}
 
-    .slider::before {
-      content: "";
-      position: absolute;
-      height: 20px;
-      width: 20px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      border-radius: 50%;
-      transition: transform 0.3s ease;
-    }
+		.slider {
+			position: absolute;
+			inset: 0;
+			cursor: pointer;
+			border-radius: 34px;
+			background-color: #ccc;
+			transition: background-color 0.3s ease;
+		}
 
-    .switch input:checked + .slider {
-      background-color: var(--switch-color, #4CAF50);
-    }
+		.slider::before {
+			position: absolute;
+			left: 3px;
+			bottom: 3px;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background-color: white;
+			content: "";
+			transition: transform 0.3s ease;
+		}
 
-    .switch input:checked + .slider::before {
-      transform: translateX(24px);
-    }
+		.switch input:checked + .slider {
+			background-color: var(--switch-color, #4CAF50);
+		}
 
-  </style>
+		.switch input:checked + .slider::before {
+			transform: translateX(24px);
+		}
+	</style>
 
-  <div class="control">
-    <span class="labels" id="ll"></span>
-    <label class="switch">
-      <input type="checkbox" role="switch">
-      <span class="slider"></span>
-    </label>
-    <span class="labels" id="rl"></span>
-  </div>
+	<div class="control">
+		<slot></slot>
+		<span class="labels">
+			<slot name="unchecked-message"><span id="ll"></span></slot>
+		</span>
+		<label class="switch">
+			<input type="checkbox" role="switch">
+			<span class="slider"></span>
+		</label>
+		<span class="labels">
+			<slot name="checked-message"><span id="rl"></span></slot>
+		</span>
+	</div>
 `;
 
 class MiSwitch extends HTMLElement {
-  static get observedAttributes() { return ["rl", "ll", "color", "checked"]; }
+	static get observedAttributes() { return ["rl", "ll", "color", "checked"]; }
 
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-  }
+	constructor() {
+		super();
+		this.attachShadow({ mode: "open" });
+	}
 
-  connectedCallback() { this.render(); }
-  attributeChangedCallback() { if (this.isConnected) this.render(); }
+	connectedCallback() { this.render(); }
 
-  render() {
-    const ll = this.getAttribute("ll") || "Off";
-    const rl = this.getAttribute("rl") || "On";
-    const color = this.getAttribute("color") || "#4CAF50";
+	attributeChangedCallback(nombreAtributo) {
+		if (!this.isConnected) return;
 
-    this.shadowRoot.replaceChildren(templateSwitch.content.cloneNode(true));
+		if (nombreAtributo === "checked") {
+			this.actualizarChecked();
+			return;
+		}
 
-    this.shadowRoot.querySelector("#ll").textContent = ll;
-    this.shadowRoot.querySelector("#rl").textContent = rl;
-    this.style.setProperty("--switch-color", color);
+		if (nombreAtributo === "color") {
+			this.actualizarColor();
+			return;
+		}
 
-    const input = this.shadowRoot.querySelector("input");
-    input.checked = this.hasAttribute("checked");
+		this.actualizarEtiquetas();
+	}
 
-    // Al cambiar, reflejamos el estado en el atributo `checked` y avisamos
-    // a la aplicación con un CustomEvent (API pública para reaccionar).
-    input.addEventListener("change", () => {
-      this.toggleAttribute("checked", input.checked);
-      this.dispatchEvent(new CustomEvent("change", {
-        detail: { checked: input.checked }
-      }));
-    });
-  }
+	render() {
+		this.shadowRoot.replaceChildren(templateSwitch.content.cloneNode(true));
+		this.actualizarEtiquetas();
+		this.actualizarColor();
+		this.actualizarChecked();
 
-  // Propiedad pública para leer/fijar el estado desde JS.
-  get checked() { return this.hasAttribute("checked"); }
-  set checked(v) { this.toggleAttribute("checked", Boolean(v)); }
+		this.shadowRoot.querySelector("input").addEventListener("change", (evento) => {
+			const input = evento.currentTarget;
+
+			this.toggleAttribute("checked", input.checked);
+			this.dispatchEvent(new CustomEvent("change", {
+				detail: { checked: input.checked }
+			}));
+		});
+	}
+
+	actualizarEtiquetas() {
+		const etiquetaIzquierda = this.shadowRoot.querySelector("#ll");
+		const etiquetaDerecha = this.shadowRoot.querySelector("#rl");
+
+		if (!etiquetaIzquierda || !etiquetaDerecha) return;
+
+		etiquetaIzquierda.textContent = this.getAttribute("ll") || "Off";
+		etiquetaDerecha.textContent = this.getAttribute("rl") || "On";
+	}
+
+	actualizarColor() {
+		this.style.setProperty("--switch-color", this.getAttribute("color") || "#4CAF50");
+	}
+
+	actualizarChecked() {
+		const input = this.shadowRoot.querySelector("input");
+		if (!input) return;
+
+		input.checked = this.checked;
+		input.setAttribute("aria-checked", String(this.checked));
+	}
+
+	get checked() { return this.hasAttribute("checked"); }
+	set checked(valor) { this.toggleAttribute("checked", Boolean(valor)); }
 }
 
 customElements.define("mi-switch", MiSwitch);

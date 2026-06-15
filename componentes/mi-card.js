@@ -9,8 +9,8 @@ templateCard.innerHTML = `
             border-radius: var(--card-radius, 5px);
             background: var(--card-bg, transparent);
             box-shadow: var(--card-shadow, none);
-            width: 100%;
-            height: 100%;
+            width: var(--card-width, 100%);
+            height: var(--card-height, 100%);
             box-sizing: border-box;
             text-align: center;
             justify-content: center;

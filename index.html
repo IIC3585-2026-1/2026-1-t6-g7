@@ -153,6 +153,101 @@
 
       </mi-accordion>
     </section>
+
+	<section id="demo-componentes">
+		<h2>Demo de componentes</h2>
+		<div class="demo-grid">
+			<article class="demo-item">
+				<h3>Campo numerico</h3>
+				<div class="demo-stack">
+					<campo-numerico value="0">Number:</campo-numerico>
+					<campo-numerico value="5" min="0" max="10">Guests:</campo-numerico>
+				</div>
+			</article>
+
+			<article class="demo-item">
+				<h3>Slider</h3>
+				<div class="demo-stack">
+					<mi-slider min="0" max="100" value="50" step="5" style="max-width: 300px;">
+						<mi-slider-label>0&#8451;</mi-slider-label>
+						<mi-slider-label position="25">25&#8451;</mi-slider-label>
+						<mi-slider-label position="50">50&#8451;</mi-slider-label>
+						<mi-slider-label position="75">75&#8451;</mi-slider-label>
+						<mi-slider-label position="100">100&#8451;</mi-slider-label>
+					</mi-slider>
+					<mi-slider min="0" max="10" value="3" step="1" style="max-width: 300px;">
+						<mi-slider-label>Min</mi-slider-label>
+						<mi-slider-label position="10">Max</mi-slider-label>
+					</mi-slider>
+				</div>
+			</article>
+
+			<article class="demo-item">
+				<h3>Switch</h3>
+				<div class="demo-stack">
+					<mi-switch id="mi-switch-demo">
+						<span slot="checked-message">On</span>
+						<span slot="unchecked-message">Off</span>
+						<label for="mi-switch-demo">Captions:</label>
+					</mi-switch>
+					<mi-switch color="#6b7d6e" checked>
+						<span slot="checked-message">Activo</span>
+						<span slot="unchecked-message">Pausa</span>
+						<label>Modo:</label>
+					</mi-switch>
+				</div>
+			</article>
+
+			<article class="demo-item">
+				<h3>Breadcrumb</h3>
+				<mi-breadcrumb>
+					<mi-breadcrumb-item href="#">Home</mi-breadcrumb-item>
+					<mi-breadcrumb-item href="#">Next Level Down</mi-breadcrumb-item>
+					<mi-breadcrumb-item>Current Location</mi-breadcrumb-item>
+				</mi-breadcrumb>
+			</article>
+
+			<article class="demo-item">
+				<h3>Acordion</h3>
+				<mi-accordion style="max-width: 350px;">
+					<mi-accordion-item>
+						<span slot="heading">Item 1</span>
+						<div class="panel">Panel one content</div>
+					</mi-accordion-item>
+					<mi-accordion-item>
+						<span slot="heading">Item 2</span>
+						<div class="panel">Panel 2 content</div>
+					</mi-accordion-item>
+					<mi-accordion-item>
+						<span slot="heading">Item 3</span>
+						<div class="panel">Panel 3 content</div>
+					</mi-accordion-item>
+				</mi-accordion>
+			</article>
+
+			<article class="demo-item">
+				<h3>Tarjeta</h3>
+				<div class="demo-stack demo-card-row">
+					<mi-card class="custom">
+						Custom size using CSS
+					</mi-card>
+					<mi-card class="custom custom--wide">
+						Second CSS size
+					</mi-card>
+				</div>
+			</article>
+
+			<article class="demo-item demo-item--wide">
+				<h3>Horizontal scroll</h3>
+				<mi-horizontal-scroll class="demo-scroll">
+					<mi-card>Card 1</mi-card>
+					<mi-card>Card 2</mi-card>
+					<mi-card>Card 3</mi-card>
+					<mi-card>Card 4</mi-card>
+				</mi-horizontal-scroll>
+			</article>
+		</div>
+	</section>
   </main>
 
   <!-- Registro de los Custom Elements (carpeta `componentes/` = la correcta) -->
